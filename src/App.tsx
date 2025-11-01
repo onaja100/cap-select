@@ -4,24 +4,26 @@ import { RecommendedCapacitor } from './components/RecommendedCapacitor'
 import { CalculationResults } from './components/CalculationResults'
 import { UserCapacitorInput } from './components/UserCapacitorInput'
 import { ComparisonTable } from './components/ComparisonTable'
-import { 
+import { AccordionSection } from './components/AccordionSection'
+import { TabPanel } from './components/TabPanel'
+import {
   calculateRecommendedCapacitor,
   calculatePerformanceParameters,
   compareCapacitors
 } from './utils/calculations'
-import type { 
+import type {
   CapacitorRecommendation,
   CalculationResults as CalculationResultsType,
   ComparisonResults
 } from './utils/calculations'
-import { 
+import {
   validateMotorInputs,
   validateCapacitorInputs,
   parseMotorData,
   parseCapacitorData,
   hasErrors
 } from './utils/validation'
-import type { 
+import type {
   MotorInputData,
   CapacitorInputData,
   ValidationError
@@ -40,56 +42,59 @@ function App() {
     voltage: '',
     frequency: '50'
   })
-  
+
   // User capacitor input state
   const [userCapacitor, setUserCapacitor] = useState<CapacitorInputData>({
     capacitance: '',
     voltage: ''
   })
-  
+
   // Results state
   const [results, setResults] = useState<AppResults | null>(null)
-  
+
   // Validation errors state
   const [motorErrors, setMotorErrors] = useState<ValidationError>({})
   const [capacitorErrors, setCapacitorErrors] = useState<ValidationError>({})
-  
+
   // Loading states
   const [isCalculating, setIsCalculating] = useState(false)
   const [isComparing, setIsComparing] = useState(false)
+
+  // Tab state for tablet view
+  const [activeTab, setActiveTab] = useState<string>('results')
 
   const handleCalculate = async () => {
     // Validate motor inputs
     const errors = validateMotorInputs(motorData)
     setMotorErrors(errors)
-    
+
     if (hasErrors(errors)) {
       return
     }
-    
+
     setIsCalculating(true)
-    
+
     try {
       // Parse motor data
       const parsedMotorData = parseMotorData(motorData)
-      
+
       // Calculate recommended capacitor
       const recommended = calculateRecommendedCapacitor(parsedMotorData)
-      
+
       // Calculate performance parameters for recommended capacitor
       const calculations = calculatePerformanceParameters(parsedMotorData, recommended.capacitance)
-      
+
       // Update results
       setResults({
         recommended,
         calculations,
         comparison: undefined // Reset comparison when recalculating
       })
-      
+
       // Reset user capacitor comparison
       setUserCapacitor({ capacitance: '', voltage: '' })
       setCapacitorErrors({})
-      
+
     } catch (error) {
       console.error('Calculation error:', error)
       alert('เกิดข้อผิดพลาดในการคำนวณ กรุณาตรวจสอบข้อมูลที่กรอก')
@@ -100,22 +105,22 @@ function App() {
 
   const handleCompare = async () => {
     if (!results) return
-    
+
     // Validate capacitor inputs
     const errors = validateCapacitorInputs(userCapacitor)
     setCapacitorErrors(errors)
-    
+
     if (hasErrors(errors)) {
       return
     }
-    
+
     setIsComparing(true)
-    
+
     try {
       // Parse capacitor data
       const parsedCapacitorData = parseCapacitorData(userCapacitor)
       const parsedMotorData = parseMotorData(motorData)
-      
+
       // Compare capacitors
       const comparison = compareCapacitors(
         parsedMotorData,
@@ -123,13 +128,16 @@ function App() {
         results.calculations,
         parsedCapacitorData
       )
-      
+
       // Update results with comparison
       setResults({
         ...results,
         comparison
       })
-      
+
+      // Switch to comparison tab on tablet
+      setActiveTab('comparison')
+
     } catch (error) {
       console.error('Comparison error:', error)
       alert('เกิดข้อผิดพลาดในการเปรียบเทียบ กรุณาตรวจสอบข้อมูลที่กรอก')
@@ -139,157 +147,283 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 shadow-lg">
-        <div className="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5">
-          {/* Unified Card Layout */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 sm:p-4 lg:p-6 mx-auto max-w-sm sm:max-w-4xl">
-            <div className="text-center">
-              <div className="flex justify-center items-center mb-2 sm:mb-3">
-                <div className="bg-white/20 rounded-lg p-1.5 sm:p-2 mr-2 sm:mr-3">
-                  <svg className="w-4 h-4 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold text-white">
-                  <span className="sm:hidden">Cap-Select</span>
-                  <span className="hidden sm:inline">Cap-Select Calculator</span>
-                </h1>
-              </div>
-              <p className="text-blue-100 text-xs sm:text-sm lg:text-base max-w-2xl mx-auto leading-relaxed mb-0 sm:mb-4">
-                <span className="sm:hidden">คำนวณ Capacitor มอเตอร์ Single-Phase</span>
-                <span className="hidden sm:inline">เครื่องมือคำนวณ Capacitor สำหรับมอเตอร์ Single-Phase อย่างแม่นยำ</span>
+    <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      {/* Compact Header */}
+      <header className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 shadow-lg flex-shrink-0">
+        <div className="px-4 py-3 lg:px-6 lg:py-4">
+          <div className="flex items-center justify-center lg:justify-start gap-3">
+            <div className="bg-white/20 rounded-lg p-1.5 lg:p-2">
+              <svg className="w-5 h-5 lg:w-6 lg:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-lg lg:text-xl font-bold text-white">
+                Cap-Select Calculator
+              </h1>
+              <p className="hidden lg:block text-xs text-blue-100">
+                คำนวณ Capacitor มอเตอร์ Single-Phase
               </p>
-              <div className="hidden sm:flex flex-wrap justify-center gap-2 lg:gap-3 text-xs lg:text-sm text-blue-200">
-                <span className="bg-white/10 rounded-full px-3 py-1.5 flex items-center">
-                  <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  คำนวณแม่นยำ
-                </span>
-                <span className="bg-white/10 rounded-full px-3 py-1.5 flex items-center">
-                  <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  ประเมินความปลอดภัย
-                </span>
-                <span className="bg-white/10 rounded-full px-3 py-1.5 flex items-center">
-                  <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  เปรียบเทียบผลกระทบ
-                </span>
-              </div>
             </div>
           </div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-6 -mt-3 sm:-mt-4 relative z-10">
-        {/* Motor Input Form */}
-        <MotorInputForm
-          data={motorData}
-          onChange={setMotorData}
-          onCalculate={handleCalculate}
-          errors={motorErrors}
-          isCalculating={isCalculating}
-        />
+      {/* Main Content - Grid Layout */}
+      <main className="flex-1 overflow-hidden p-2 lg:p-4">
 
-        {/* Results Section */}
-        {results && (
-          <div className="space-y-3 sm:space-y-4">
-            {/* Recommended Capacitor */}
-            <div className="animate-slide-in-up">
-              <RecommendedCapacitor data={results.recommended} />
-            </div>
+        {/* Mobile Layout - Accordion */}
+        <div className="lg:hidden h-full overflow-y-auto space-y-2">
+          {/* Step 1: Motor Input */}
+          <AccordionSection
+            title="ขั้นตอนที่ 1: ข้อมูลมอเตอร์"
+            icon={
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            }
+            defaultOpen={true}
+          >
+            <MotorInputForm
+              data={motorData}
+              onChange={setMotorData}
+              onCalculate={handleCalculate}
+              errors={motorErrors}
+              isCalculating={isCalculating}
+            />
+          </AccordionSection>
 
-            {/* Calculation Results */}
-            <div className="animate-slide-in-up" style={{ animationDelay: '0.1s' }}>
-              <CalculationResults data={results.calculations} />
-            </div>
+          {/* Step 2: Results */}
+          {results && (
+            <AccordionSection
+              title="ขั้นตอนที่ 2: ผลการคำนวณ"
+              icon={
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              }
+              badge="✓"
+              defaultOpen={true}
+            >
+              <div className="space-y-3">
+                <RecommendedCapacitor data={results.recommended} />
+                <CalculationResults data={results.calculations} />
+              </div>
+            </AccordionSection>
+          )}
 
-            {/* User Capacitor Input */}
-            <div className="animate-slide-in-up" style={{ animationDelay: '0.2s' }}>
-              <UserCapacitorInput
-                data={userCapacitor}
-                onChange={setUserCapacitor}
-                onCompare={handleCompare}
-                errors={capacitorErrors}
-                isComparing={isComparing}
-                disabled={!results}
+          {/* Step 3: Comparison */}
+          {results && (
+            <AccordionSection
+              title="ขั้นตอนที่ 3: เปรียบเทียบ"
+              icon={
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              }
+              badge={results.comparison ? "✓" : ""}
+              defaultOpen={false}
+            >
+              <div className="space-y-3">
+                <UserCapacitorInput
+                  data={userCapacitor}
+                  onChange={setUserCapacitor}
+                  onCompare={handleCompare}
+                  errors={capacitorErrors}
+                  isComparing={isComparing}
+                  disabled={!results}
+                />
+                {results.comparison && (
+                  <ComparisonTable
+                    recommended={results.recommended}
+                    recommendedCalcs={results.calculations}
+                    user={results.comparison}
+                  />
+                )}
+              </div>
+            </AccordionSection>
+          )}
+        </div>
+
+        {/* Tablet Layout - 2 Columns */}
+        <div className="hidden lg:grid xl:hidden h-full grid-cols-[350px_1fr] gap-4 overflow-hidden">
+          {/* Left Column - Inputs */}
+          <div className="flex flex-col gap-3 overflow-y-auto">
+            <div className="bg-white rounded-lg shadow-lg p-4">
+              <h3 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                ข้อมูลมอเตอร์
+              </h3>
+              <MotorInputForm
+                data={motorData}
+                onChange={setMotorData}
+                onCalculate={handleCalculate}
+                errors={motorErrors}
+                isCalculating={isCalculating}
               />
             </div>
 
-            {/* Comparison Table */}
-            {results.comparison && (
-              <div className="animate-scale-in">
-                <ComparisonTable
-                  recommended={results.recommended}
-                  recommendedCalcs={results.calculations}
-                  user={results.comparison}
+            {results && (
+              <div className="bg-white rounded-lg shadow-lg p-4">
+                <h3 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  Capacitor ที่คุณมี
+                </h3>
+                <UserCapacitorInput
+                  data={userCapacitor}
+                  onChange={setUserCapacitor}
+                  onCompare={handleCompare}
+                  errors={capacitorErrors}
+                  isComparing={isComparing}
+                  disabled={!results}
                 />
               </div>
             )}
           </div>
-        )}
-      </main>
 
-      {/* Footer */}
-      <footer className="bg-gradient-to-r from-slate-800 to-slate-900 border-t border-slate-700 mt-8 sm:mt-12">
-        <div className="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
-          {/* Mobile Footer */}
-          <div className="block sm:hidden text-center">
-            <div className="bg-slate-700/50 rounded-lg p-3 mb-3">
-              <div className="flex justify-center items-center mb-2">
-                <div className="bg-blue-500/20 rounded-lg p-1 mr-2">
-                  <svg className="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          {/* Right Column - Results with Tabs */}
+          <div className="overflow-y-auto">
+            {results ? (
+              <TabPanel
+                tabs={[
+                  {
+                    id: 'results',
+                    label: 'ผลการคำนวณ',
+                    icon: '✓'
+                  },
+                  {
+                    id: 'comparison',
+                    label: 'เปรียบเทียบ',
+                    icon: '📊',
+                    badge: results.comparison ? '✓' : ''
+                  }
+                ]}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+              >
+                {activeTab === 'results' && (
+                  <div className="space-y-4">
+                    <RecommendedCapacitor data={results.recommended} />
+                    <CalculationResults data={results.calculations} />
+                  </div>
+                )}
+                {activeTab === 'comparison' && results.comparison && (
+                  <ComparisonTable
+                    recommended={results.recommended}
+                    recommendedCalcs={results.calculations}
+                    user={results.comparison}
+                  />
+                )}
+                {activeTab === 'comparison' && !results.comparison && (
+                  <div className="text-center py-12 text-gray-500">
+                    <svg className="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <p>กรุณากรอกข้อมูล Capacitor ที่คุณมีเพื่อเปรียบเทียบ</p>
+                  </div>
+                )}
+              </TabPanel>
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center text-gray-400">
+                  <svg className="w-24 h-24 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
+                  <p className="text-lg">กรุณากรอกข้อมูลมอเตอร์และกดคำนวณ</p>
                 </div>
-                <span className="text-white text-sm font-semibold">Cap-Select</span>
               </div>
-              <p className="text-slate-300 text-xs mb-2">
-                คำนวณ Capacitor มอเตอร์แม่นยำ
-              </p>
-              <div className="text-xs text-slate-400">
-                v1.0.0 • ฟรี • มาตรฐานไทย 50Hz
-              </div>
-            </div>
-            <p className="text-slate-500 text-xs">
-              © 2024 Cap-Select Calculator
-            </p>
-          </div>
-
-          {/* Desktop Footer */}
-          <div className="hidden sm:block text-center">
-            <div className="flex justify-center items-center mb-3">
-              <div className="bg-blue-500/20 rounded-lg p-1.5 mr-2">
-                <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <span className="text-white font-semibold">Cap-Select Calculator</span>
-            </div>
-            <p className="text-slate-400 text-sm mb-3">
-              เครื่องมือคำนวณ Capacitor สำหรับมอเตอร์ Single-Phase อย่างแม่นยำและปลอดภัย
-            </p>
-            <div className="flex flex-wrap justify-center gap-3 text-xs text-slate-500 mb-3">
-              <span className="bg-slate-700/50 rounded px-2 py-1">v1.0.0</span>
-              <span className="bg-slate-700/50 rounded px-2 py-1">ระบบคำนวณแม่นยำ</span>
-              <span className="bg-slate-700/50 rounded px-2 py-1">ประเมินความปลอดภัย</span>
-              <span className="bg-slate-700/50 rounded px-2 py-1">รองรับมาตรฐานไทย 50Hz</span>
-            </div>
-            <div className="border-t border-slate-700 pt-3">
-              <p className="text-slate-500 text-xs">
-                © 2024 Cap-Select Calculator. ใช้งานได้ฟรี เพื่อความปลอดภัยในการใช้งานมอเตอร์
-              </p>
-            </div>
+            )}
           </div>
         </div>
-      </footer>
+
+        {/* Desktop Layout - 3 Columns */}
+        <div className="hidden xl:grid h-full gap-4 overflow-hidden"
+             style={{
+               gridTemplateColumns: results?.comparison
+                 ? '350px 1fr 420px'
+                 : '350px 1fr'
+             }}>
+
+          {/* Left Column - Inputs */}
+          <div className="flex flex-col gap-3 overflow-y-auto">
+            <div className="bg-white rounded-lg shadow-lg p-5">
+              <h3 className="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
+                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                ข้อมูลมอเตอร์
+              </h3>
+              <MotorInputForm
+                data={motorData}
+                onChange={setMotorData}
+                onCalculate={handleCalculate}
+                errors={motorErrors}
+                isCalculating={isCalculating}
+              />
+            </div>
+
+            {results && (
+              <div className="bg-white rounded-lg shadow-lg p-5">
+                <h3 className="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  Capacitor ที่คุณมี
+                </h3>
+                <UserCapacitorInput
+                  data={userCapacitor}
+                  onChange={setUserCapacitor}
+                  onCompare={handleCompare}
+                  errors={capacitorErrors}
+                  isComparing={isComparing}
+                  disabled={!results}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Middle Column - Results */}
+          <div className="overflow-y-auto">
+            {results ? (
+              <div className="space-y-4">
+                <RecommendedCapacitor data={results.recommended} />
+                <CalculationResults data={results.calculations} />
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center text-gray-400">
+                  <svg className="w-32 h-32 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <p className="text-xl font-medium mb-2">เริ่มต้นการคำนวณ</p>
+                  <p className="text-gray-500">กรุณากรอกข้อมูลมอเตอร์ทางซ้ายและกดคำนวณ</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Right Column - Comparison (conditional) */}
+          {results?.comparison && (
+            <div className="overflow-y-auto bg-white rounded-lg shadow-lg p-5">
+              <h3 className="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
+                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                ผลการเปรียบเทียบ
+              </h3>
+              <ComparisonTable
+                recommended={results.recommended}
+                recommendedCalcs={results.calculations}
+                user={results.comparison}
+              />
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   )
 }
