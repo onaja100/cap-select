@@ -30,9 +30,9 @@ export const MotorInputForm: React.FC<MotorInputFormProps> = ({
   }
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-4 sm:p-6 mb-6 sm:mb-8 hover:shadow-2xl transition-all duration-300">
+    <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl border border-cyan-200/50 p-4 sm:p-6 mb-6 sm:mb-8 hover:shadow-cyan-200/50 hover:shadow-2xl transition-all duration-300">
       <div className="flex items-center mb-4 sm:mb-6">
-        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg p-2 sm:p-2.5 mr-3 shadow-lg">
+        <div className="bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl p-2 sm:p-2.5 mr-3 shadow-lg shadow-cyan-500/50">
           <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
@@ -81,10 +81,10 @@ export const MotorInputForm: React.FC<MotorInputFormProps> = ({
             type="submit"
             disabled={isCalculating}
             className={`
-              relative px-8 py-4 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300/50 shadow-lg hover:shadow-xl
-              ${isCalculating 
-                ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'
+              relative px-8 py-4 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-cyan-300/50 shadow-xl hover:shadow-2xl
+              ${isCalculating
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-600 hover:via-blue-700 hover:to-purple-700 shadow-cyan-500/50'
               }
             `}
           >
@@ -106,16 +106,16 @@ export const MotorInputForm: React.FC<MotorInputFormProps> = ({
         </div>
       </form>
       
-      <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200/50">
+      <div className="mt-6 p-4 bg-gradient-to-r from-cyan-50 via-blue-50 to-purple-50 rounded-xl border-l-4 border-cyan-400 shadow-md">
         <div className="flex items-start">
-          <svg className="w-5 h-5 text-blue-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-5 h-5 text-cyan-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
           </svg>
           <div>
-            <p className="text-sm text-blue-700 font-medium">
+            <p className="text-sm text-cyan-800 font-semibold">
               <strong>ข้อมูลสำคัญ:</strong>
             </p>
-            <p className="text-sm text-blue-600 mt-1">
+            <p className="text-sm text-cyan-700 mt-1">
               ความถี่ไฟฟ้าในประเทศไทยเป็น 50 Hz ตามมาตรฐาน (ไม่สามารถแก้ไขได้)
             </p>
           </div>

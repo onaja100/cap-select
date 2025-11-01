@@ -34,9 +34,9 @@ export const UserCapacitorInput: React.FC<UserCapacitorInputProps> = ({
   }
 
   return (
-    <div className={`bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-4 sm:p-6 mb-6 sm:mb-8 hover:shadow-2xl transition-all duration-300 ${disabled ? 'opacity-60' : ''}`}>
+    <div className={`bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl border border-orange-200/50 p-4 sm:p-6 mb-6 sm:mb-8 hover:shadow-orange-200/50 hover:shadow-2xl transition-all duration-300 ${disabled ? 'opacity-60' : ''}`}>
       <div className="flex items-center mb-4 sm:mb-6">
-        <div className="bg-gradient-to-r from-orange-500 to-red-600 rounded-lg p-2 sm:p-2.5 mr-3 shadow-lg">
+        <div className="bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 rounded-xl p-2 sm:p-2.5 mr-3 shadow-lg shadow-orange-500/50">
           <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
@@ -90,10 +90,10 @@ export const UserCapacitorInput: React.FC<UserCapacitorInputProps> = ({
             type="submit"
             disabled={isComparing || disabled}
             className={`
-              relative px-8 py-4 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-orange-300/50 shadow-lg hover:shadow-xl
+              relative px-8 py-4 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-orange-300/50 shadow-xl hover:shadow-2xl
               ${isComparing || disabled
-                ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700'
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 hover:from-orange-600 hover:via-amber-600 hover:to-yellow-600 shadow-orange-500/50'
               }
             `}
           >
@@ -115,16 +115,16 @@ export const UserCapacitorInput: React.FC<UserCapacitorInputProps> = ({
         </div>
       </form>
       
-      <div className="mt-6 p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl border border-orange-200/50">
+      <div className="mt-6 p-4 bg-gradient-to-r from-orange-50 via-amber-50 to-yellow-50 rounded-xl border-l-4 border-orange-500 shadow-md">
         <div className="flex items-start">
-          <svg className="w-5 h-5 text-orange-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-5 h-5 text-orange-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
           </svg>
           <div>
-            <p className="text-sm text-orange-700 font-medium">
+            <p className="text-sm text-orange-900 font-bold">
               <strong>หมายเหตุ:</strong>
             </p>
-            <p className="text-sm text-orange-600 mt-1">
+            <p className="text-sm text-orange-800 mt-1 font-medium">
               กรอกข้อมูล Capacitor ที่คุณมีอยู่ เพื่อดูความแตกต่างและผลกระทบต่อประสิทธิภาพมอเตอร์
             </p>
           </div>

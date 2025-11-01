@@ -139,9 +139,9 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-purple-50 to-pink-50">
       {/* Header */}
-      <header className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 shadow-lg">
+      <header className="bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 shadow-2xl">
         <div className="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5">
           {/* Unified Card Layout */}
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 sm:p-4 lg:p-6 mx-auto max-w-sm sm:max-w-4xl">
@@ -238,7 +238,7 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-r from-slate-800 to-slate-900 border-t border-slate-700 mt-8 sm:mt-12">
+      <footer className="bg-gradient-to-r from-gray-800 via-slate-800 to-gray-900 border-t border-purple-500/30 mt-8 sm:mt-12">
         <div className="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
           {/* Mobile Footer */}
           <div className="block sm:hidden text-center">

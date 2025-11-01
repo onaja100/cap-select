@@ -41,9 +41,9 @@ export const CalculationResults: React.FC<CalculationResultsProps> = ({ data }) 
   ]
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-4 sm:p-6 mb-6 sm:mb-8 hover:shadow-2xl transition-all duration-300">
+    <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl border border-purple-200/50 p-4 sm:p-6 mb-6 sm:mb-8 hover:shadow-purple-200/50 hover:shadow-2xl transition-all duration-300">
       <div className="flex items-center mb-4 sm:mb-6">
-        <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-lg p-2 sm:p-2.5 mr-3 shadow-lg">
+        <div className="bg-gradient-to-r from-purple-500 via-violet-600 to-fuchsia-600 rounded-xl p-2 sm:p-2.5 mr-3 shadow-lg shadow-purple-500/50">
           <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
@@ -70,29 +70,29 @@ export const CalculationResults: React.FC<CalculationResultsProps> = ({ data }) 
         ))}
       </div>
       
-      <div className="mt-6 p-4 sm:p-5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200/50 shadow-sm">
+      <div className="mt-6 p-4 sm:p-5 bg-gradient-to-r from-purple-50 via-violet-50 to-fuchsia-50 rounded-xl border-l-4 border-purple-500 shadow-md">
         <div className="flex items-start">
           <div className="flex-shrink-0">
-            <div className="bg-blue-100 rounded-full p-1.5">
-              <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+            <div className="bg-gradient-to-br from-purple-400 to-violet-500 rounded-full p-1.5 shadow-md">
+              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
               </svg>
             </div>
           </div>
           <div className="ml-4">
-            <h4 className="text-blue-800 font-semibold mb-2">วิธีการตีความผลลัพธ์</h4>
+            <h4 className="text-purple-900 font-bold mb-2">วิธีการตีความผลลัพธ์</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
-              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-2.5 border border-blue-200/50">
-                <div className="font-semibold text-blue-700 mb-1">มุมเฟส (θ)</div>
-                <div className="text-blue-600">ควรใกล้ 90° เพื่อประสิทธิภาพสูงสุด</div>
+              <div className="bg-white/70 backdrop-blur-sm rounded-lg p-2.5 border border-purple-300/50 shadow-sm">
+                <div className="font-bold text-purple-700 mb-1">มุมเฟส (θ)</div>
+                <div className="text-purple-600 font-medium">ควรใกล้ 90° เพื่อประสิทธิภาพสูงสุด</div>
               </div>
-              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-2.5 border border-blue-200/50">
-                <div className="font-semibold text-blue-700 mb-1">กระแส (I)</div>
-                <div className="text-blue-600">ต้องอยู่ในช่วงที่เหมาะสมกับมอเตอร์</div>
+              <div className="bg-white/70 backdrop-blur-sm rounded-lg p-2.5 border border-violet-300/50 shadow-sm">
+                <div className="font-bold text-violet-700 mb-1">กระแส (I)</div>
+                <div className="text-violet-600 font-medium">ต้องอยู่ในช่วงที่เหมาะสมกับมอเตอร์</div>
               </div>
-              <div className="bg-white/60 backdrop-blur-sm rounded-lg p-2.5 border border-blue-200/50">
-                <div className="font-semibold text-blue-700 mb-1">Power Loss</div>
-                <div className="text-blue-600">ยิ่งต่ำยิ่งดี เพื่อลดความร้อน</div>
+              <div className="bg-white/70 backdrop-blur-sm rounded-lg p-2.5 border border-fuchsia-300/50 shadow-sm">
+                <div className="font-bold text-fuchsia-700 mb-1">Power Loss</div>
+                <div className="text-fuchsia-600 font-medium">ยิ่งต่ำยิ่งดี เพื่อลดความร้อน</div>
               </div>
             </div>
           </div>
